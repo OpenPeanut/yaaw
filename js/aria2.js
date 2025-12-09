@@ -102,7 +102,7 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
       $("#add-task-option-wrap").empty().append(YAAW.tpl.add_task_option({}));
       $("#aria2-gsetting").empty().append(YAAW.tpl.aria2_global_setting({}));
 
-      jsonrpc_interface = path || location.protocol+"//"+(location.host.split(":")[0]||"localhost")+":6800"+"/jsonrpc";
+      jsonrpc_interface = path || location.protocol+"//"+location.host+"/jsonrpc";
       var auth_str = request_auth(jsonrpc_interface);
       if (auth_str && auth_str.indexOf('token:') == 0) {
         rpc_secret = auth_str;
@@ -335,29 +335,8 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
     },
 
     restart_task: function(gids) {
-      if (!$.isArray(gids)) gids = [gids];
-      $.each(gids, function(n, gid) {
-        var result = $("#task-gid-"+gid).data("raw");
-        var uris = [];
-        $.each(result.files, function(n, e) {
-          if (e.uris.length)
-            uris.push(e.uris[0].uri);
-        });
-        if (result.bittorrent) {
-          var magnet_link = "magnet:?xt=urn:btih:"+result.infoHash;
-          if (result.bittorrent.info.name)
-            magnet_link += "&dn="+result.bittorrent.info.name;
-          if (result.bittorrent.announceList.length)
-            magnet_link += "&tr="+result.bittorrent.announceList.join("&tr=");
-          uris.push(magnet_link);
-        }
-        if (uris.length > 0) {
-          ARIA2.request("getOption", [gid], function(result) {
-            var options = result.result;
-            ARIA2.madd_task(uris, options);
-          });
-        }
-      });
+      // 直接调用 unpause 来恢复任务
+      ARIA2.unpause(gids);
     },
 
     tell_active: function(keys) {
@@ -766,7 +745,7 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
             main_alert("alert-error", "<strong>Error: </strong>rpc result error.", 5000);
           }
 
-          $("#global-version").text("Aria2 "+result.result.version || "");
+          $("#global-version").text("Aria4 "+result.result.version || "");
         }
       );
     },

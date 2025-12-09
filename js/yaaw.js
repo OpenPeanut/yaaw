@@ -381,16 +381,16 @@ var YAAW = (function() {
       },
 
       view: {
-        bitfield: function() {
-          var graphic = "░▒▓█";
-          return function(text) {
-            var len = text.length;
-            var result = "";
-            for (var i=0; i<len; i++)
-            result += graphic[Math.floor(parseInt(text[i], 16)/4)] + "&#8203;";
-            return result;
-          };
-        },
+          bitfield: function() {
+              var graphic = " 123456789#";
+              return function(text) {
+                  var len = text.length;
+                  var result = "<br/>";
+                  for (var i=0; i<len; i++)
+                      result += '<svg width="15" height="15"><g transform="translate(2, 4)"><rect width="11" height="11" x="0" y="0" class="ContributionCalendar-day" rx="2" ry="2" data-level="'+Math.floor((parseInt(text[i], 16)*4.0)/15)+'"></rect></g></svg>';
+                  return result;
+              };
+          },
 
         bitfield_to_10: function() {
           var graphic = "░▒▓█";
@@ -939,7 +939,7 @@ var YAAW = (function() {
 
     setting: {
       init: function() {
-        this.jsonrpc_path = $.Storage.get("jsonrpc_path") || location.protocol+"//"+(location.host.split(":")[0]||"localhost")+":6800"+"/jsonrpc";
+        this.jsonrpc_path = $.Storage.get("jsonrpc_path") || location.protocol+"//"+location.host+"/jsonrpc";
         this.refresh_interval = Number($.Storage.get("refresh_interval") || 10000);
         this.finish_notification = Number($.Storage.get("finish_notification") || 1);
         this.add_task_option = $.Storage.get("add_task_option");
