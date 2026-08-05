@@ -95,6 +95,14 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
   function remove_auth(url) {
     return url.replace(/^((?![^:@]+:[^:@\/]*@)[^:\/?#.]+:)?(\/\/)?(?:(?:[^:@]*(?::[^:@]*)?)?@)?(.*)/, '$1$2$3');
   }
+  function default_jsonrpc_path() {
+    var path = location.pathname;
+    if (path.charAt(path.length - 1) !== '/') {
+      var lastSlash = path.lastIndexOf('/');
+      path = path.substring(lastSlash + 1).indexOf('.') === -1 ? path + '/' : path.substring(0, lastSlash + 1);
+    }
+    return location.protocol + "//" + location.host + path + "jsonrpc";
+  }
 
   return {
     init: function(path, onready) {
@@ -102,7 +110,7 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
       $("#add-task-option-wrap").empty().append(YAAW.tpl.add_task_option({}));
       $("#aria2-gsetting").empty().append(YAAW.tpl.aria2_global_setting({}));
 
-      jsonrpc_interface = path || location.protocol+"//"+location.host+"/jsonrpc";
+      jsonrpc_interface = path || default_jsonrpc_path();
       var auth_str = request_auth(jsonrpc_interface);
       if (auth_str && auth_str.indexOf('token:') == 0) {
         rpc_secret = auth_str;

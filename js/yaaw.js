@@ -24,6 +24,15 @@ var YAAW = (function() {
   var selected_range_close = null;
   var on_gid = null;
   var torrent_file = null, file_type = null;
+
+  function default_jsonrpc_path() {
+    var path = location.pathname;
+    if (path.charAt(path.length - 1) !== '/') {
+      var lastSlash = path.lastIndexOf('/');
+      path = path.substring(lastSlash + 1).indexOf('.') === -1 ? path + '/' : path.substring(0, lastSlash + 1);
+    }
+    return location.protocol + "//" + location.host + path + "jsonrpc";
+  }
   return {
     init: function() {
       $('#main-control').show();
@@ -939,7 +948,10 @@ var YAAW = (function() {
 
     setting: {
       init: function() {
-        this.jsonrpc_path = $.Storage.get("jsonrpc_path") || location.protocol+"//"+location.host+"/jsonrpc";
+        var defaultPath = default_jsonrpc_path();
+        var legacyDefaultPath = location.protocol + "//" + location.host + "/jsonrpc";
+        var savedPath = $.Storage.get("jsonrpc_path");
+        this.jsonrpc_path = !savedPath || savedPath === legacyDefaultPath ? defaultPath : savedPath;
         this.refresh_interval = Number($.Storage.get("refresh_interval") || 10000);
         this.finish_notification = Number($.Storage.get("finish_notification") || 1);
         this.add_task_option = $.Storage.get("add_task_option");
