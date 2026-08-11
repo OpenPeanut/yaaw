@@ -26,12 +26,7 @@ var YAAW = (function() {
   var torrent_file = null, file_type = null;
 
   function default_jsonrpc_path() {
-    var path = location.pathname;
-    if (path.charAt(path.length - 1) !== '/') {
-      var lastSlash = path.lastIndexOf('/');
-      path = path.substring(lastSlash + 1).indexOf('.') === -1 ? path + '/' : path.substring(0, lastSlash + 1);
-    }
-    return location.protocol + "//" + location.host + path + "jsonrpc";
+    return new URL("jsonrpc", document.baseURI).href;
   }
   return {
     init: function() {
