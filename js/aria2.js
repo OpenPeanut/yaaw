@@ -66,6 +66,9 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
       worker.workerProgressBar = new Array(filled + 1).join("#") + new Array(11 - filled).join(" ");
       worker.workerStatusLabel = labels[worker.status] || worker.status;
       worker.workerStateClass = "worker-state-" + worker.status;
+      if (worker.lastError) {
+        worker.lastError = worker.lastError.replace(/^[A-Za-z]+\s+"[^"]+":\s*/, "");
+      }
     }
     return result;
   }
