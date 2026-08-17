@@ -367,6 +367,58 @@
     position: relative;
     margin: 18px 0;
 }
+.worker-section {
+    margin-top: 12px;
+}
+.worker-list {
+    margin: 8px 0 0;
+    list-style: none;
+}
+.worker-row {
+    margin: 0 0 10px;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-left: 4px solid #3a87ad;
+    border-radius: 4px;
+    background: #fafafa;
+}
+.worker-row.worker-state-retrying,
+.worker-row.worker-state-error {
+    border-left-color: #b94a48;
+}
+.worker-row.worker-state-completed {
+    border-left-color: #468847;
+}
+.worker-row.worker-state-waiting,
+.worker-row.worker-state-stopped {
+    border-left-color: #f89406;
+}
+.worker-heading .label {
+    margin-left: 6px;
+}
+.worker-source,
+.worker-error {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+.worker-block,
+.worker-speed,
+.worker-attempt,
+.worker-source,
+.worker-error {
+    margin-top: 4px;
+}
+.worker-progress {
+    max-width: 520px;
+    margin: 5px 0 0;
+}
+.worker-error-current {
+    color: #b94a48;
+}
+.worker-error-history,
+.worker-empty {
+    color: #777;
+}
 #ib-files .file-list {
     margin-left: -25px;
 }

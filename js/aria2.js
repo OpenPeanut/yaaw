@@ -43,6 +43,40 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
     $("#main-alert").show();
   }
 
+  function prepare_worker_status(result) {
+    var labels = {
+      "waiting": "Waiting", "downloading": "Downloading", "retrying": "Retrying",
+      "writing": "Writing", "committing": "Committing", "completed": "Completed",
+      "stopped": "Stopped", "error": "Error"
+    };
+    var workers = result.aria4Workers || [];
+    result.hasWorkers = workers.length > 0;
+    result.workerEmptyMessage = result.status == "active" ? "Preparing workers..." : "No worker data";
+    for (var i = 0; i < workers.length; i++) {
+      var worker = workers[i];
+      worker.blockLength = parseInt(worker.blockLength, 10) || 0;
+      worker.completedLength = parseInt(worker.completedLength, 10) || 0;
+      worker.downloadSpeed = parseInt(worker.downloadSpeed, 10) || 0;
+      worker.attempt = parseInt(worker.attempt, 10) || 0;
+      worker.hasBlock = worker.blockLength > 0;
+      worker.hasSpeed = worker.downloadSpeed > 0;
+      worker.hasAttempt = worker.attempt > 0;
+      worker.workerProgress = worker.hasBlock ? Math.min(100, worker.completedLength * 100 / worker.blockLength).toFixed(1) : "0.0";
+      worker.workerStatusLabel = labels[worker.status] || worker.status;
+      worker.workerStateClass = "worker-state-" + worker.status;
+      worker.workerLabelClass = {
+        "completed": "label-success", "retrying": "label-important", "error": "label-important",
+        "waiting": "label-warning", "stopped": "label-warning"
+      }[worker.status] || "label-info";
+      worker.workerProgressClass = {
+        "completed": "progress-success", "retrying": "progress-danger progress-striped",
+        "error": "progress-danger", "stopped": "progress-warning"
+      }[worker.status] || "progress-info progress-striped active";
+      worker.workerErrorClass = worker.status == "retrying" || worker.status == "error" ? "worker-error-current" : "worker-error-history";
+    }
+    return result;
+  }
+
   function main_alert(_class, msg, timeout) {
     var msg_id = (new Date()).getTime();
     $("#main-alert .alert").attr("class", "alert "+_class);
@@ -760,7 +794,7 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
             main_alert("alert-error", "<strong>Error: </strong>rpc result error.", 5000);
           }
 
-          result = result.result;
+          result = prepare_worker_status(result.result);
           result.uris = [];
           for (var i=0; i<result.files.length; i++) {
             var file = result.files[i];
@@ -775,7 +809,6 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
               }
             }
           };
-          console.log(result.uris);
           $("#ib-status").empty().append(YAAW.tpl.ib_status(result));
           $("#ib-files .file-list").empty().append(YAAW.tpl.files_tree(result.files));
           if ($("#task-gid-"+gid).attr("data-status") == "active")
