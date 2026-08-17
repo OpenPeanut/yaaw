@@ -50,6 +50,18 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
       "stopped": "Stopped", "error": "Error"
     };
     var workers = result.aria4Workers || [];
+    var urlIDs = {};
+    var nextURLID = 1;
+    var files = result.files || [];
+    for (var fileIndex = 0; fileIndex < files.length; fileIndex++) {
+      var uris = files[fileIndex].uris || [];
+      for (var uriIndex = 0; uriIndex < uris.length; uriIndex++) {
+        var uri = uris[uriIndex].uri;
+        if (uri && !urlIDs[uri]) {
+          urlIDs[uri] = nextURLID++;
+        }
+      }
+    }
     result.hasWorkers = workers.length > 0;
     result.workerEmptyMessage = result.status == "active" ? "Preparing workers..." : "No worker data";
     for (var i = 0; i < workers.length; i++) {
@@ -66,6 +78,8 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
       worker.workerProgressBar = new Array(filled + 1).join("#") + new Array(11 - filled).join(" ");
       worker.workerStatusLabel = labels[worker.status] || worker.status;
       worker.workerStateClass = "worker-state-" + worker.status;
+      worker.urlID = urlIDs[worker.uri] || 0;
+      worker.hasURLID = worker.urlID > 0;
       if (worker.lastError) {
         worker.lastError = worker.lastError.replace(/^[A-Za-z]+\s+"[^"]+":\s*/, "");
       }

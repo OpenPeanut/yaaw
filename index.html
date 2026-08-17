@@ -354,6 +354,7 @@
             <li class="worker-line">
               <span class="worker-dot {{workerStateClass}}">&bull;</span>
               <span>{{id}}:</span>
+              {{#hasURLID}}<span>URL {{urlID}}</span>{{/hasURLID}}
               {{#showSpeed}}<span>{{#_v.format_size_0}}{{downloadSpeed}}{{/_v.format_size_0}}/s</span>{{/showSpeed}}
               {{^showSpeed}}<span>{{workerStatusLabel}}</span>{{/showSpeed}}
               {{#hasBlock}}<span class="worker-ascii">[{{workerProgressBar}}]</span> <span>{{#_v.format_size_0}}{{completedLength}}{{/_v.format_size_0}}/{{#_v.format_size_0}}{{blockLength}}{{/_v.format_size_0}} ({{workerProgress}}%)</span>{{/hasBlock}}
