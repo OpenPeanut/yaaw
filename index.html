@@ -351,19 +351,14 @@
           {{#hasWorkers}}
           <ul class="worker-list">
             {{#aria4Workers}}
-            <li class="worker-row {{workerStateClass}}">
-              <div class="worker-heading">
-                <strong>Worker {{id}}</strong>
-                <span class="label {{workerLabelClass}}">{{workerStatusLabel}}</span>
-              </div>
-              {{#uri}}<div class="worker-source"><strong>Source: </strong><a target="_blank" rel="noopener" href="{{uri}}">{{uri}}</a></div>{{/uri}}
-              {{#hasBlock}}
-              <div class="worker-block"><strong>Block: </strong>{{#_v.format_size}}{{completedLength}}{{/_v.format_size}} / {{#_v.format_size}}{{blockLength}}{{/_v.format_size}} ({{workerProgress}}%)</div>
-              <div class="progress worker-progress {{workerProgressClass}}"><div class="bar" style="width: {{workerProgress}}%">{{workerProgress}}%</div></div>
-              {{/hasBlock}}
-              {{#hasSpeed}}<div class="worker-speed"><strong>Speed: </strong>{{#_v.format_size}}{{downloadSpeed}}{{/_v.format_size}}/s</div>{{/hasSpeed}}
-              {{#hasAttempt}}<div class="worker-attempt"><strong>Attempt: </strong>{{attempt}}</div>{{/hasAttempt}}
-              {{#lastError}}<div class="worker-error {{workerErrorClass}}"><strong>Last error{{#lastErrorClass}} ({{lastErrorClass}}){{/lastErrorClass}}: </strong>{{lastError}}</div>{{/lastError}}
+            <li class="worker-line">
+              <span class="worker-dot {{workerStateClass}}">&bull;</span>
+              <span>{{id}}:</span>
+              {{#showSpeed}}<span>{{#_v.format_size_0}}{{downloadSpeed}}{{/_v.format_size_0}}/s</span>{{/showSpeed}}
+              {{^showSpeed}}<span>{{workerStatusLabel}}</span>{{/showSpeed}}
+              {{#hasBlock}}<span class="worker-ascii">[{{workerProgressBar}}]</span> <span>{{#_v.format_size_0}}{{completedLength}}{{/_v.format_size_0}}/{{#_v.format_size_0}}{{blockLength}}{{/_v.format_size_0}} ({{workerProgress}}%)</span>{{/hasBlock}}
+              {{#hasAttempt}}<span>Attempt: {{attempt}}</span>{{/hasAttempt}}
+              {{#lastError}}<span class="worker-error">{{lastError}}</span>{{/lastError}}
             </li>
             {{/aria4Workers}}
           </ul>

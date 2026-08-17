@@ -59,20 +59,13 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
       worker.downloadSpeed = parseInt(worker.downloadSpeed, 10) || 0;
       worker.attempt = parseInt(worker.attempt, 10) || 0;
       worker.hasBlock = worker.blockLength > 0;
-      worker.hasSpeed = worker.downloadSpeed > 0;
+      worker.showSpeed = worker.status == "downloading";
       worker.hasAttempt = worker.attempt > 0;
-      worker.workerProgress = worker.hasBlock ? Math.min(100, worker.completedLength * 100 / worker.blockLength).toFixed(1) : "0.0";
+      worker.workerProgress = worker.hasBlock ? Math.round(Math.min(100, worker.completedLength * 100 / worker.blockLength)) : 0;
+      var filled = Math.round(worker.workerProgress / 10);
+      worker.workerProgressBar = new Array(filled + 1).join("#") + new Array(11 - filled).join(" ");
       worker.workerStatusLabel = labels[worker.status] || worker.status;
       worker.workerStateClass = "worker-state-" + worker.status;
-      worker.workerLabelClass = {
-        "completed": "label-success", "retrying": "label-important", "error": "label-important",
-        "waiting": "label-warning", "stopped": "label-warning"
-      }[worker.status] || "label-info";
-      worker.workerProgressClass = {
-        "completed": "progress-success", "retrying": "progress-danger progress-striped",
-        "error": "progress-danger", "stopped": "progress-warning"
-      }[worker.status] || "progress-info progress-striped active";
-      worker.workerErrorClass = worker.status == "retrying" || worker.status == "error" ? "worker-error-current" : "worker-error-history";
     }
     return result;
   }
