@@ -24,6 +24,13 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
   var active_tasks_snapshot="", finished_tasks_list=undefined, tasks_cnt_snapshot="", select_lock=false, need_refresh=false;
   var auto_refresh=false;
 
+  function format_system_metric(value, unit) {
+    if (value === undefined || value === null || value === "")
+      return "--";
+    var number = Number(value);
+    return isFinite(number) ? number.toFixed(1) + unit : "--";
+  }
+
   function get_error(result) {
     if (typeof result == "string")
       return result;
@@ -775,6 +782,8 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
               ARIA2.refresh();
           }
 
+          result.cpuUsageDisplay = format_system_metric(result.cpuUsage, "%");
+          result.cpuTemperatureDisplay = format_system_metric(result.cpuTemperature, "°C");
           $("#global-speed").empty().append(YAAW.tpl.global_speed(result));
           var title = "↓"+YAAW.tpl.view.format_size_0()(result.downloadSpeed);
           if (result.uploadSpeed > 0)
