@@ -65,6 +65,10 @@
 /* header */
 .main-head {
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
 }
 .main-head h1 {
     display: inline-block;
@@ -85,12 +89,22 @@
 }
 
 #global-info {
-    position: absolute;
-    bottom: 0;
-    right: 0;
+    margin-left: auto;
+    max-width: 100%;
 }
 #global-version {
     text-align: right;
+}
+
+#global-speed {
+    text-align: right;
+}
+.global-transfer-speed, .global-system-stat {
+    display: inline-block;
+    white-space: nowrap;
+}
+.global-system-stat {
+    margin-left: 12px;
 }
 
 /* main-control */

@@ -241,9 +241,12 @@
     </section>
     
     <script id="global-speed-tpl" type="text/mustache-template">
+      <span class="global-transfer-speed">
       <i class="icon-download"></i> <span>{{#_v.format_size}}{{downloadSpeed}}{{/_v.format_size}}</span>/s
         / 
       <i class="icon-upload"></i>  <span>{{#_v.format_size}}{{uploadSpeed}}{{/_v.format_size}}</span>/s
+      </span>
+      <span class="global-system-stat">CPU {{cpuUsageDisplay}} · 温度 {{cpuTemperatureDisplay}}</span>
     </script>
 
     <script id="active-task-tpl" type="text/mustache-template">
