@@ -1,5 +1,5 @@
 CACHE MANIFEST
-#2026-10-19 host CPU, temperature, and disk space
+#2026-11-10 peer download status and source accounting
 
 CACHE:
 index.html
@@ -16,5 +16,6 @@ js/jquery.Storage.js
 js/jquery.base64.min.js
 js/mustache.js
 js/peerid.js
+js/aria4-transfers.js
 js/aria2.js
 js/yaaw.js

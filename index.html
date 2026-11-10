@@ -261,6 +261,7 @@
             <span class="task-status" rel="tooltip" title="{{status}} {{#_v.error_msg}}{{errorCode}}{{/_v.error_msg}}"><i class="{{#_v.status_icon}}{{status}}{{/_v.status_icon}}"></i></span>
             <span>{{#_v.format_size}}{{completedLength}}{{/_v.format_size}} / {{#_v.format_size}}{{totalLength}}{{/_v.format_size}}</span>
             {{#uploadLength}}<span>(uploaded {{#_v.format_size}}{{uploadLength}}{{/_v.format_size}})</span>{{/uploadLength}}
+            {{#hasPeerMode}}<span class="peer-mode">{{#isPeerOnly}}仅 P2P{{/isPeerOnly}}{{#isHybrid}}HTTP + P2P{{/isHybrid}} · Peer {{activePeerCount}}/{{peerLimit}}</span>{{/hasPeerMode}}
             {{#eta}}<span>ETA: {{#_v.format_time}}{{eta}}{{/_v.format_time}}</span>{{/eta}}
           </div>
         </div>
@@ -299,6 +300,7 @@
           <div class="task-info pull-left">
             <span class="task-status" rel="tooltip" title="{{status}} {{#_v.error_msg}}{{errorCode}}{{/_v.error_msg}}"><i class="{{#_v.status_icon}}{{status}}{{/_v.status_icon}}"></i></span>
             <span>{{#_v.format_size}}{{totalLength}}{{/_v.format_size}}</span>
+            {{#hasPeerMode}}<span class="peer-mode">{{#isPeerOnly}}仅 P2P{{/isPeerOnly}}{{#isHybrid}}HTTP + P2P{{/isHybrid}}</span>{{/hasPeerMode}}
             {{#uploadLength}}<span>(up {{#_v.format_size}}{{uploadLength}}{{/_v.format_size}})</span>{{/uploadLength}}
           </div>
           <div class="pull-right">
@@ -349,6 +351,48 @@
           {{#comment}}<li><strong>Comment: </strong>{{comment}}</li>{{/comment}}
         {{/bittorrent}}
         <li class="bitfield"><strong>Bitfield: </strong>{{#_v.bitfield}}{{bitfield}}{{/_v.bitfield}}</li>
+        {{#hasSourceStats}}
+        <li class="transfer-section">
+          <strong>下载来源</strong>
+          {{#hasPeerMode}}<span class="peer-mode">{{#isPeerOnly}}仅 P2P · HTTP 已暂停{{/isPeerOnly}}{{#isHybrid}}HTTP + P2P{{/isHybrid}} · Peer {{activePeerCount}}/{{peerLimit}}</span>{{/hasPeerMode}}
+          <div class="transfer-table-wrap">
+            <table class="table table-condensed transfer-table source-table">
+              <thead><tr><th>来源</th><th>累计接收</th><th>已落盘</th><th>当前速度</th><th>连接</th></tr></thead>
+              <tbody>
+                {{#sourceRows}}
+                <tr><td>{{sourceLabel}}{{#paused}} <span class="muted">已暂停</span>{{/paused}}</td>
+                  <td>{{#_v.format_size}}{{receivedBytes}}{{/_v.format_size}}</td>
+                  <td>{{#_v.format_size}}{{committedBytes}}{{/_v.format_size}}</td>
+                  <td>{{#_v.format_size}}{{downloadSpeed}}{{/_v.format_size}}/s</td><td>{{connections}}</td></tr>
+                {{/sourceRows}}
+              </tbody>
+            </table>
+          </div>
+          <p class="transfer-note">累计接收包含重试流量；已落盘表示成功保存的分块。</p>
+        </li>
+        {{/hasSourceStats}}
+        {{#hasPeerMode}}
+        <li class="transfer-section">
+          <strong>Peer 节点</strong>
+          {{#hasPeers}}
+          <div class="transfer-table-wrap peer-table-wrap">
+            <table class="table table-condensed transfer-table peer-table">
+              <thead><tr><th>节点</th><th>来源</th><th>状态</th><th>累计接收</th><th>速度</th><th>失败</th></tr></thead>
+              <tbody>
+                {{#peerRows}}
+                <tr><td class="peer-id">{{id}}</td><td>{{sourceLabel}}</td>
+                  <td><span class="{{stateClass}}">{{stateLabel}}</span>{{#hasRetry}} · {{retrySeconds}} 秒后重试{{/hasRetry}}
+                    {{#lastError}}<div class="peer-error">{{lastError}}</div>{{/lastError}}</td>
+                  <td>{{#_v.format_size}}{{receivedBytes}}{{/_v.format_size}}</td>
+                  <td>{{#_v.format_size}}{{downloadSpeed}}{{/_v.format_size}}/s</td><td>{{failures}}</td></tr>
+                {{/peerRows}}
+              </tbody>
+            </table>
+          </div>
+          {{/hasPeers}}
+          {{^hasPeers}}<span class="worker-empty">{{peerEmptyMessage}}</span>{{/hasPeers}}
+        </li>
+        {{/hasPeerMode}}
         <li class="worker-section">
           <strong>Workers: </strong>
           {{#hasWorkers}}
@@ -527,6 +571,7 @@
     <script src="js/jquery.base64.min.js"></script>
     <script src="js/mustache.js"></script>
     <script src="js/peerid.js"></script>
+    <script src="js/aria4-transfers.js"></script>
     <script src="js/aria2.js"></script>
     <script src="js/yaaw.js"></script>
   </body>

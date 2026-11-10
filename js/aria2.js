@@ -546,6 +546,7 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
         result.completedLength = parseInt(result.completedLength);
         result.numSeeders = parseInt(result.numSeeders);
         result.connections = parseInt(result.connections);
+        ARIA4_TRANSFERS.prepare(result);
       }
       return results;
     },
@@ -815,7 +816,7 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
             main_alert("alert-error", "<strong>Error: </strong>rpc result error.", 5000);
           }
 
-          result = prepare_worker_status(result.result);
+          result = prepare_worker_status(ARIA4_TRANSFERS.prepare(result.result));
           result.uris = [];
           for (var i=0; i<result.files.length; i++) {
             var file = result.files[i];
