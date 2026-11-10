@@ -339,7 +339,7 @@
 
     <script id="ib-status-tpl" type="text/mustache-template">
       <ul>
-        {{#uris}}<li><strong>Url: </strong><a target=_blank href="{{.}}">{{.}}</a>{{/uris}}
+        {{#hasUris}}<li class="task-url-links"><strong>Url: </strong>{{#uriLinks}}<a target="_blank" rel="noopener noreferrer" href="{{uri}}">url{{index}}</a> {{/uriLinks}}</li>{{/hasUris}}
         {{#infoHash}}<li><strong>Infohash: </strong><a target=_blank href="magnet:?xt=urn:btih:{{infoHash}}">{{infoHash}}</a></li>{{/infoHash}}
         <li><strong>Size: </strong>{{#_v.format_size}}{{totalLength}}{{/_v.format_size}} ({{numPieces}} @ {{#_v.format_size}}{{pieceLength}}{{/_v.format_size}})</li>
         <li><strong>Status: </strong>{{status}} {{error_msg}}</li>
