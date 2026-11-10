@@ -831,6 +831,10 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
               }
             }
           };
+          result.hasUris = result.uris.length > 0;
+          result.uriLinks = result.uris.map(function(uri, index) {
+            return { uri: uri, index: index };
+          });
           $("#ib-status").empty().append(YAAW.tpl.ib_status(result));
           $("#ib-files .file-list").empty().append(YAAW.tpl.files_tree(result.files));
           if ($("#task-gid-"+gid).attr("data-status") == "active")

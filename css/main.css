@@ -381,6 +381,10 @@
     position: relative;
     margin: 18px 0;
 }
+#ib-status .task-url-links {
+    white-space: nowrap;
+    overflow-x: auto;
+}
 .worker-section {
     margin-top: 12px;
 }
