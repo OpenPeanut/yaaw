@@ -53,6 +53,7 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
   function prepare_worker_status(result) {
     var labels = {
       "waiting": "Waiting", "downloading": "Downloading", "retrying": "Retrying",
+      "connecting": "Connecting", "ready": "Ready", "choked": "等待节点放行",
       "writing": "Writing", "committing": "Committing", "completed": "Completed",
       "stopped": "Stopped", "error": "Error"
     };
@@ -85,8 +86,7 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
       worker.workerProgressBar = new Array(filled + 1).join("#") + new Array(11 - filled).join(" ");
       worker.workerStatusLabel = labels[worker.status] || worker.status;
       worker.workerStateClass = "worker-state-" + worker.status;
-      worker.urlID = urlIDs[worker.uri] || 0;
-      worker.hasURLID = worker.urlID > 0;
+      ARIA4_TRANSFERS.prepareWorkerSource(worker, urlIDs);
       if (worker.lastError) {
         worker.lastError = worker.lastError.replace(/^[A-Za-z]+\s+"[^"]+":\s*/, "");
       }

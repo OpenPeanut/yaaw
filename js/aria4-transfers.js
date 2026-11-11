@@ -66,6 +66,7 @@
         receivedBytes: number(peer.receivedBytes),
         downloadSpeed: running ? number(peer.downloadSpeed) : 0,
         failures: number(peer.failures), lastError: peer.lastError || "",
+        connections: running ? number(peer.connections) : 0,
         hasRanges: hasRanges, rangeCount: number(peer.rangeCount), availableBytes: number(peer.availableBytes),
         rangeNote: peer.rangesUpdatedAt ? "待重新探测" : "尚未探测",
         retrySeconds: seconds, hasRetry: seconds > 0 && running
@@ -84,5 +85,13 @@
     return "↓" + format(stats.downloadSpeed) +
       (stats.hasPeerSpeed ? " (p2p:" + format(stats.peerDownloadSpeed) + ")" : "");
   }
-  return {prepare: prepare, prepareGlobal: prepareGlobal, speedTitle: speedTitle};
+  function prepareWorkerSource(worker, urlIDs) {
+    var match = /^peer:\/\/([a-f0-9]{12})$/i.exec(worker.uri || "");
+    worker.peerID = match ? match[1] : "";
+    worker.hasPeerID = !!match;
+    worker.urlID = match ? 0 : ((urlIDs || {})[worker.uri] || 0);
+    worker.hasURLID = worker.urlID > 0;
+    return worker;
+  }
+  return {prepare: prepare, prepareGlobal: prepareGlobal, speedTitle: speedTitle, prepareWorkerSource: prepareWorkerSource};
 }));
