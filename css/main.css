@@ -17,36 +17,6 @@
  * from http://www.gnu.org/licenses/lgpl.txt
  *
  */
-.ContributionCalendar-day, .ContributionCalendar-day[data-level="0"] {
-    fill: #ebedf0;
-    shape-rendering: geometricPrecision;
-    outline: 1px solid rgba(27, 31, 35, 0.06);
-    outline-offset: -1px;
-}
-.ContributionCalendar-day[data-level="1"] {
-    fill: #9be9a8;
-    shape-rendering: geometricPrecision;
-    outline: 1px solid rgba(27, 31, 35, 0.06);
-    outline-offset: -1px;
-}
-.ContributionCalendar-day[data-level="2"] {
-    fill: #40c463;
-    shape-rendering: geometricPrecision;
-    outline: 1px solid rgba(27, 31, 35, 0.06);
-    outline-offset: -1px;
-}
-.ContributionCalendar-day[data-level="3"] {
-    fill: #30a14e;
-    shape-rendering: geometricPrecision;
-    outline: 1px solid rgba(27, 31, 35, 0.06);
-    outline-offset: -1px;
-}
-.ContributionCalendar-day[data-level="4"] {
-    fill: #216e39;
-    shape-rendering: geometricPrecision;
-    outline: 1px solid rgba(27, 31, 35, 0.06);
-    outline-offset: -1px;
-}
 .select-box {
     cursor: pointer;
     user-select: none;
@@ -658,6 +628,15 @@
 .peer-id { font-family: monospace; }
 .peer-error { color: #9d362e; max-width: 310px; overflow-wrap: anywhere; white-space: normal; }
 .transfer-note { font-size: 12px; color: #777; margin: 0; }
+.disk-summary { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 6px; font-size: 12px; }
+.disk-table { min-width: 340px; }
+.range-section { margin: 12px 0; }
+.range-legend { margin-left: 12px; color: #777; font-size: 12px; white-space: nowrap; }
+.range-key { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin: 0 4px 0 8px; }
+.range-key.complete, .range-complete { background: #5eb95e; }
+.range-key.pending { background: #e1e5e9; }
+.progress.range-progress { position: relative; height: 20px; margin: 7px 0 0; padding: 0; border: 0; border-radius: 4px; overflow: hidden; background: #e1e5e9; box-shadow: none; }
+.range-progress .range-complete { position: absolute; top: 0; bottom: 0; display: block; margin: 0; padding: 0; }
 .peer-state-downloading, .peer-state-ready { color: #28764b; }
 .peer-state-rejected, .peer-state-slow { color: #ad3e31; }
 .peer-state-cooldown, .peer-state-choked { color: #916216; }

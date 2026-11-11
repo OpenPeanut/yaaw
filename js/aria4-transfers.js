@@ -10,12 +10,65 @@
   function sourceName(type) {
     return {http: "HTTP", phub: "PHub", xphub: "XPHub"}[type] || type;
   }
+  function prepareRanges(task) {
+    var total = number(task.totalLength), ranges = [], raw = task.aria4CompletedRanges;
+    var known = Array.isArray(raw);
+    task.rangeSegments = [];
+    task.hasRangeProgress = false;
+    if (!total || total > 9007199254740991) return;
+    if (known) {
+      for (var i = 0; i < raw.length; i++) {
+        var r = raw[i];
+        if (!r || r.start === undefined || r.end === undefined) continue;
+        var start = Number(r.start), end = Number(r.end);
+        if (isFinite(start) && isFinite(end) && start >= 0 && end > start && end <= total) ranges.push([start, end]);
+      }
+    } else if (task.status === "complete") {
+      known = true;
+      ranges.push([0, total]);
+    }
+    if (!known) return;
+    ranges.sort(function(a,b) { return a[0] - b[0]; });
+    var merged = [];
+    for (var j = 0; j < ranges.length; j++) {
+      var last = merged[merged.length - 1], next = ranges[j];
+      if (last && next[0] <= last[1]) last[1] = Math.max(last[1], next[1]);
+      else merged.push(next.slice());
+    }
+    var completed = 0;
+    for (var k = 0; k < merged.length; k++) {
+      completed += merged[k][1] - merged[k][0];
+      task.rangeSegments.push({left: merged[k][0] / total * 100, width: (merged[k][1] - merged[k][0]) / total * 100});
+    }
+    task.rangeProgress = (completed / total * 100).toFixed(2);
+    task.hasRangeProgress = true;
+  }
   function prepare(task, now) {
+    prepareRanges(task);
     now = now === undefined ? Date.now() : now;
     var hasExtension = task.aria4Sources !== undefined || task.aria4DownloadMode !== undefined;
     var running = task.status === "active";
     var sources = task.aria4Sources || [];
     var peers = task.aria4Peers || [];
+    var disk = task.aria4Disk;
+    task.hasDiskStats = !!disk;
+    task.diskStats = null;
+    if (disk) {
+      var average = function(total, count) { return count > 0 ? (number(total) / count).toFixed(2) : "0.00"; };
+      var writes = number(disk.writeCount), syncs = number(disk.syncCount), waits = number(disk.waitCount);
+      task.diskStats = {
+        allocation: {fallocate: "空间已预留", truncate: "仅设置文件大小", failed: "空间准备失败"}[disk.allocation] || "等待文件准备",
+        allocationFallback: disk.allocation === "truncate",
+        phase: running ? ({writing: "写入中", syncing: "同步中", idle: "空闲"}[disk.phase] || "空闲") : "已停止",
+        writtenBytes: number(disk.writtenBytes), queueBlocks: running ? number(disk.queueBlocks) : 0,
+        queueBytes: running ? number(disk.queueBytes) : 0, peakQueueBlocks: number(disk.peakQueueBlocks),
+        writeCount: writes, writeAverage: average(disk.writeMillis, writes), writeMax: number(disk.maxWriteMillis).toFixed(2),
+        syncCount: syncs, syncAverage: average(disk.syncMillis, syncs), syncMax: number(disk.maxSyncMillis).toFixed(2),
+        waitCount: waits, waitAverage: average(disk.waitMillis, waits), waitMax: number(disk.maxWaitMillis).toFixed(2),
+        checkpointCount: number(disk.checkpointCount), checkpointAverage: average(disk.checkpointMillis, number(disk.checkpointCount)),
+        errors: number(disk.errors)
+      };
+    }
     var states = {
       queued: "待连接", connecting: "连接中", ready: "已连接", downloading: "下载中",
       probing: "探测区间", available: "已探测", no_ranges: "未提供区间",

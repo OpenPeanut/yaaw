@@ -344,14 +344,45 @@
       <ul>
         {{#hasUris}}<li class="task-url-links"><strong>Url: </strong>{{#uriLinks}}<a target="_blank" rel="noopener noreferrer" href="{{uri}}">url{{index}}</a> {{/uriLinks}}</li>{{/hasUris}}
         {{#infoHash}}<li><strong>Infohash: </strong><a target=_blank href="magnet:?xt=urn:btih:{{infoHash}}">{{infoHash}}</a></li>{{/infoHash}}
-        <li><strong>Size: </strong>{{#_v.format_size}}{{totalLength}}{{/_v.format_size}} ({{numPieces}} @ {{#_v.format_size}}{{pieceLength}}{{/_v.format_size}})</li>
+        <li><strong>Size: </strong>{{#_v.format_size}}{{totalLength}}{{/_v.format_size}}</li>
         <li><strong>Status: </strong>{{status}} {{error_msg}}</li>
         <li><strong>Dir: </strong>{{dir}}</li>
         {{#bittorrent}}
           {{#creationDate}}<li>Torrent Created At {{creationDate}}</li>{{/creationDate}}
           {{#comment}}<li><strong>Comment: </strong>{{comment}}</li>{{/comment}}
         {{/bittorrent}}
-        <li class="bitfield"><strong>Bitfield: </strong>{{#_v.bitfield}}{{bitfield}}{{/_v.bitfield}}</li>
+        {{#hasRangeProgress}}
+        <li class="range-section">
+          <strong>下载分布</strong>
+          <span class="range-legend"><span class="range-key complete"></span>已完成 <span class="range-key pending"></span>未完成</span>
+          <div class="progress range-progress" role="progressbar" aria-label="文件下载分布" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{rangeProgress}}" title="已完成 {{rangeProgress}}%">
+            {{#rangeSegments}}<span class="range-complete" style="left:{{left}}%;width:{{width}}%" aria-hidden="true"></span>{{/rangeSegments}}
+          </div>
+        </li>
+        {{/hasRangeProgress}}
+        {{#hasDiskStats}}{{#diskStats}}
+        <li class="transfer-section disk-stats">
+          <strong>磁盘写入</strong> <span class="muted">{{phase}} · {{allocation}}</span>
+          <div class="disk-summary">
+            <span>已写入 {{#_v.format_size}}{{writtenBytes}}{{/_v.format_size}}</span>
+            <span>等待写盘 {{queueBlocks}} 块 / {{#_v.format_size}}{{queueBytes}}{{/_v.format_size}}</span>
+            <span>排队峰值 {{peakQueueBlocks}} 块</span>
+          </div>
+          <div class="transfer-table-wrap">
+            <table class="table table-condensed transfer-table disk-table">
+              <thead><tr><th>操作</th><th>次数</th><th>平均耗时</th><th>最大耗时</th></tr></thead>
+              <tbody>
+                <tr><td>写入</td><td>{{writeCount}}</td><td>{{writeAverage}} ms</td><td>{{writeMax}} ms</td></tr>
+                <tr><td>同步</td><td>{{syncCount}}</td><td>{{syncAverage}} ms</td><td>{{syncMax}} ms</td></tr>
+                <tr><td>排队等待</td><td>{{waitCount}}</td><td>{{waitAverage}} ms</td><td>{{waitMax}} ms</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="transfer-note">断点保存 {{checkpointCount}} 次，平均 {{checkpointAverage}} ms · 磁盘操作失败 {{errors}} 次</p>
+          {{#allocationFallback}}<p class="transfer-note">未预留实际磁盘空间，下载过程中按需分配。</p>{{/allocationFallback}}
+          <p class="transfer-note">本次运行统计；写入耗时不含同步，已写入量包含重试。耗时表示程序调用耗时，并非磁盘峰值性能。</p>
+        </li>
+        {{/diskStats}}{{/hasDiskStats}}
         {{#hasSourceStats}}
         <li class="transfer-section">
           <strong>下载来源</strong>
@@ -445,7 +476,7 @@
 
     <script id="ib-peers-tpl" type="text/mustache-template">
       {{#.}}
-      <li><span class="ip_port">{{ip}}:{{port}} - <span class="peerid">{{#_v.format_peerid}}{{peerId}}{{/_v.format_peerid}}</span></span> <b>{{#_v.bitfield_to_percent}}{{bitfield}}{{/_v.bitfield_to_percent}}%</b> <i class="icon-download"></i>{{#_v.format_size}}{{downloadSpeed}}{{/_v.format_size}}/s <i class="icon-upload"></i>{{#_v.format_size}}{{uploadSpeed}}{{/_v.format_size}}/s</li>
+      <li><span class="ip_port">{{ip}}:{{port}} - <span class="peerid">{{#_v.format_peerid}}{{peerId}}{{/_v.format_peerid}}</span></span> <i class="icon-download"></i>{{#_v.format_size}}{{downloadSpeed}}{{/_v.format_size}}/s <i class="icon-upload"></i>{{#_v.format_size}}{{uploadSpeed}}{{/_v.format_size}}/s</li>
       {{/.}}
     </script>
 
