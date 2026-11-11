@@ -65,7 +65,7 @@
       var average = function(total, count) { return count > 0 ? (number(total) / count).toFixed(2) : "0.00"; };
       var writes = number(disk.writeCount), syncs = number(disk.syncCount), waits = number(disk.waitCount);
       task.diskStats = {
-        allocation: {fallocate: "空间已预留", truncate: "仅设置文件大小", failed: "空间准备失败"}[disk.allocation] || "等待文件准备",
+        allocation: {existing: "复用已有文件", fallocate: "空间已预留", truncate: "仅设置文件大小", failed: "空间准备失败"}[disk.allocation] || "等待文件准备",
         allocationFallback: disk.allocation === "truncate",
         phase: running ? ({writing: "写入中", syncing: "同步中", idle: "空闲"}[disk.phase] || "空闲") : "已停止",
         writtenBytes: number(disk.writtenBytes), queueBlocks: running ? number(disk.queueBlocks) : 0,
