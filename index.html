@@ -377,12 +377,13 @@
           {{#hasPeers}}
           <div class="transfer-table-wrap peer-table-wrap">
             <table class="table table-condensed transfer-table peer-table">
-              <thead><tr><th>节点</th><th>来源</th><th>状态</th><th>累计接收</th><th>速度</th><th>失败</th></tr></thead>
+              <thead><tr><th>节点</th><th>来源</th><th>状态</th><th>持有区间</th><th>累计接收</th><th>速度</th><th>失败</th></tr></thead>
               <tbody>
                 {{#peerRows}}
                 <tr><td class="peer-id">{{id}}</td><td>{{sourceLabel}}</td>
                   <td><span class="{{stateClass}}">{{stateLabel}}</span>{{#hasRetry}} · {{retrySeconds}} 秒后重试{{/hasRetry}}
                     {{#lastError}}<div class="peer-error">{{lastError}}</div>{{/lastError}}</td>
+                  <td>{{#hasRanges}}{{rangeCount}} 段 · {{#_v.format_size}}{{availableBytes}}{{/_v.format_size}}{{/hasRanges}}{{^hasRanges}}{{rangeNote}}{{/hasRanges}}</td>
                   <td>{{#_v.format_size}}{{receivedBytes}}{{/_v.format_size}}</td>
                   <td>{{#_v.format_size}}{{downloadSpeed}}{{/_v.format_size}}/s</td><td>{{failures}}</td></tr>
                 {{/peerRows}}
@@ -390,6 +391,7 @@
             </table>
           </div>
           {{/hasPeers}}
+          <p class="transfer-note">持有区间来自节点声明，可能包含已完成部分；实际分配会排除已完成和正在下载的区间。</p>
           {{^hasPeers}}<span class="worker-empty">{{peerEmptyMessage}}</span>{{/hasPeers}}
         </li>
         {{/hasPeerMode}}

@@ -70,3 +70,26 @@ assert.ok(hybridHTML.includes('HTTP + P2P'));
 assert.ok(hybridHTML.includes('Peer 节点'));
 assert.ok(!hybridHTML.includes('HTTP 已暂停'));
 console.log('PASS: hybrid mode retains independent HTTP and peer traffic');
+
+const probed = transfers.prepare({status:'active', aria4DownloadMode:'peer', aria4PeerLimit:'32', aria4Peers:[
+  {id:'pending',source:'phub',state:'probing'},
+  {id:'known',source:'xphub',state:'available',rangeCount:'8',availableBytes:'65536',rangesUpdatedAt:'2026-11-10T10:00:00Z',rangesExpiresAt:'2026-11-10T10:01:00Z'},
+  {id:'expired',source:'phub',state:'available',rangeCount:'4',availableBytes:'32768',rangesUpdatedAt:'2026-11-10T09:58:00Z',rangesExpiresAt:'2026-11-10T09:59:00Z'},
+  {id:'empty',source:'phub',state:'no_ranges',rangeCount:'0',availableBytes:'0',rangesUpdatedAt:'2026-11-10T10:00:00Z',rangesExpiresAt:'2026-11-10T10:01:00Z'}
+]}, now);
+assert.equal(probed.peerLimit,32);
+assert.equal(probed.peerRows[0].stateLabel,'探测区间');
+assert.equal(probed.peerRows[1].hasRanges,true);
+assert.equal(probed.peerRows[1].rangeCount,8);
+assert.equal(probed.peerRows[1].availableBytes,65536);
+assert.equal(probed.peerRows[2].hasRanges,false);
+assert.equal(probed.peerRows[2].rangeNote,'待重新探测');
+assert.equal(probed.peerRows[3].hasRanges,true);
+assert.equal(probed.peerRows[3].rangeCount,0);
+const probeHTML=Mustache.render(template,probed);
+assert.ok(probeHTML.includes('持有区间'));
+assert.ok(probeHTML.includes('8 段'));
+assert.ok(probeHTML.includes('0 段'));
+assert.ok(probeHTML.includes('待重新探测'));
+assert.equal(transfers.prepare({...probed,status:'paused'},now).peerRows[0].stateLabel,'已停止');
+console.log('PASS: peer probe, advertised coverage, expiry and 32 worker limit');
