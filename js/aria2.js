@@ -787,8 +787,9 @@ if (typeof ARIA2=="undefined"||!ARIA2) var ARIA2=(function(){
           result.cpuTemperatureDisplay = format_system_metric(result.cpuTemperature, "°C");
           result.diskFreeDisplay = result.diskFree === undefined || result.diskFree === null || result.diskFree === ""
             ? "--" : YAAW.tpl.view.format_size_0()(result.diskFree);
+          ARIA4_TRANSFERS.prepareGlobal(result);
           $("#global-speed").empty().append(YAAW.tpl.global_speed(result));
-          var title = "↓"+YAAW.tpl.view.format_size_0()(result.downloadSpeed);
+          var title = ARIA4_TRANSFERS.speedTitle(result, YAAW.tpl.view.format_size_0());
           if (result.uploadSpeed > 0)
             title += " ↑"+YAAW.tpl.view.format_size_0()(result.uploadSpeed);
           title += " - Yet Another Aria2 Web Frontend";

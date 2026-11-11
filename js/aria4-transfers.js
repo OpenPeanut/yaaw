@@ -28,6 +28,8 @@
     task.hasSourceStats = hasExtension && sources.length > 0;
     task.peerLimit = number(task.aria4PeerLimit);
     task.activePeerCount = 0;
+    task.peerDownloadSpeed = 0;
+    task.hasPeerSpeed = hasExtension;
     task.sourceRows = [];
     for (var i = 0; i < sources.length; i++) {
       var source = sources[i];
@@ -39,7 +41,10 @@
         paused: task.isPeerOnly && source.type === "http"
       };
       if (row.paused) { row.downloadSpeed = 0; row.connections = 0; }
-      if (source.type === "phub" || source.type === "xphub") task.activePeerCount += row.connections;
+      if (source.type === "phub" || source.type === "xphub") {
+        task.activePeerCount += row.connections;
+        task.peerDownloadSpeed += row.downloadSpeed;
+      }
       task.sourceRows.push(row);
     }
     task.peerRows = [];
@@ -70,5 +75,14 @@
     task.peerEmptyMessage = running ? "正在获取可用节点…" : "暂无节点记录";
     return task;
   }
-  return {prepare: prepare};
+  function prepareGlobal(stats) {
+    stats.hasPeerSpeed = stats.aria4PeerDownloadSpeed !== undefined;
+    stats.peerDownloadSpeed = number(stats.aria4PeerDownloadSpeed);
+    return stats;
+  }
+  function speedTitle(stats, format) {
+    return "↓" + format(stats.downloadSpeed) +
+      (stats.hasPeerSpeed ? " (p2p:" + format(stats.peerDownloadSpeed) + ")" : "");
+  }
+  return {prepare: prepare, prepareGlobal: prepareGlobal, speedTitle: speedTitle};
 }));

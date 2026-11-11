@@ -243,6 +243,7 @@
     <script id="global-speed-tpl" type="text/mustache-template">
       <span class="global-transfer-speed">
       <i class="icon-download"></i> <span>{{#_v.format_size}}{{downloadSpeed}}{{/_v.format_size}}</span>/s
+      {{#hasPeerSpeed}}<span class="p2p-speed">(p2p:{{#_v.format_size}}{{peerDownloadSpeed}}{{/_v.format_size}}/s)</span>{{/hasPeerSpeed}}
         / 
       <i class="icon-upload"></i>  <span>{{#_v.format_size}}{{uploadSpeed}}{{/_v.format_size}}</span>/s
       </span>
@@ -270,7 +271,7 @@
             <div class="bar" style="width: {{progress}}%">{{progress}}%</div>
           </div>
           <div class="progress-info">
-            {{#downloadSpeed}}<span class="download-speed"><i class="icon-download"></i> {{#_v.format_size}}{{downloadSpeed}}{{/_v.format_size}}/s</span>{{/downloadSpeed}}
+            {{#downloadSpeed}}<span class="download-speed"><i class="icon-download"></i> {{#_v.format_size}}{{downloadSpeed}}{{/_v.format_size}}/s{{#hasPeerSpeed}} <span class="p2p-speed">(p2p:{{#_v.format_size}}{{peerDownloadSpeed}}{{/_v.format_size}}/s)</span>{{/hasPeerSpeed}}</span>{{/downloadSpeed}}
             {{#uploadSpeed}}<span class="upload-speed"><i class="icon-upload"></i> {{#_v.format_size}}{{uploadSpeed}}{{/_v.format_size}}/s</span>{{/uploadSpeed}}
             {{#connections}}<span class="seeders"><i class="icon-signal" rel="tooltip" title="Connections"></i> {{connections}}</span>{{/connections}}
             {{#numSeeders}}<span class="seeders"><i class="icon-magnet" rel="tooltip" title="Seeders"></i> {{numSeeders}}</span>{{/numSeeders}}
