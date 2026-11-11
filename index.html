@@ -354,8 +354,9 @@
         {{#hasRangeProgress}}
         <li class="range-section">
           <strong>下载分布</strong>
-          <span class="range-legend"><span class="range-key complete"></span>已完成 <span class="range-key pending"></span>未完成</span>
+          <span class="range-legend"><span class="range-key complete"></span>已完成 <span class="range-key inflight" title="已领取，正在下载或等待落盘"></span><span title="已领取，正在下载或等待落盘">处理中</span> <span class="range-key pending"></span>未领取</span>
           <div class="progress range-progress" role="progressbar" aria-label="文件下载分布" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{rangeProgress}}" title="已完成 {{rangeProgress}}%">
+            {{#rangeInFlightSegments}}<span class="range-inflight" style="left:{{left}}%;width:{{width}}%" aria-hidden="true"></span>{{/rangeInFlightSegments}}
             {{#rangeSegments}}<span class="range-complete" style="left:{{left}}%;width:{{width}}%" aria-hidden="true"></span>{{/rangeSegments}}
           </div>
         </li>

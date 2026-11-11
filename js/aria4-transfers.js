@@ -10,24 +10,16 @@
   function sourceName(type) {
     return {http: "HTTP", phub: "PHub", xphub: "XPHub"}[type] || type;
   }
-  function prepareRanges(task) {
-    var total = number(task.totalLength), ranges = [], raw = task.aria4CompletedRanges;
-    var known = Array.isArray(raw);
-    task.rangeSegments = [];
-    task.hasRangeProgress = false;
-    if (!total || total > 9007199254740991) return;
-    if (known) {
+  function normalizedRanges(raw, total) {
+    var ranges = [];
+    if (Array.isArray(raw)) {
       for (var i = 0; i < raw.length; i++) {
         var r = raw[i];
         if (!r || r.start === undefined || r.end === undefined) continue;
         var start = Number(r.start), end = Number(r.end);
         if (isFinite(start) && isFinite(end) && start >= 0 && end > start && end <= total) ranges.push([start, end]);
       }
-    } else if (task.status === "complete") {
-      known = true;
-      ranges.push([0, total]);
     }
-    if (!known) return;
     ranges.sort(function(a,b) { return a[0] - b[0]; });
     var merged = [];
     for (var j = 0; j < ranges.length; j++) {
@@ -35,12 +27,28 @@
       if (last && next[0] <= last[1]) last[1] = Math.max(last[1], next[1]);
       else merged.push(next.slice());
     }
+    return merged;
+  }
+  function prepareRanges(task) {
+    var total = number(task.totalLength), raw = task.aria4CompletedRanges;
+    task.rangeSegments = [];
+    task.rangeInFlightSegments = [];
+    task.hasRangeProgress = false;
+    if (!total || total > 9007199254740991) return;
+    if (!Array.isArray(raw) && task.status !== "complete") return;
+    var merged = Array.isArray(raw) ? normalizedRanges(raw, total) : [[0, total]];
     var completed = 0;
     for (var k = 0; k < merged.length; k++) {
       completed += merged[k][1] - merged[k][0];
       task.rangeSegments.push({left: merged[k][0] / total * 100, width: (merged[k][1] - merged[k][0]) / total * 100});
     }
     task.rangeProgress = (completed / total * 100).toFixed(2);
+    if (task.status === "active") {
+      var inFlight = normalizedRanges(task.aria4InFlightRanges, total);
+      for (var n = 0; n < inFlight.length; n++) {
+        task.rangeInFlightSegments.push({left: inFlight[n][0] / total * 100, width: (inFlight[n][1] - inFlight[n][0]) / total * 100});
+      }
+    }
     task.hasRangeProgress = true;
   }
   function prepare(task, now) {

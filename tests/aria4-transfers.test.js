@@ -176,3 +176,18 @@ assert.deepEqual(badRanges.rangeSegments,[]);
 assert.ok(!Mustache.render(template,badRanges).includes('<script>'));
 assert.equal(transfers.prepare({status:'active',totalLength:1000,bitfield:'ff',pieceLength:125},now).hasRangeProgress,false);
 console.log('PASS: exact interval bar, partial pieces, merging, empty/full/paused states and no bitmap conversion');
+
+const leasedRanges=transfers.prepare({status:'active',totalLength:1000,aria4CompletedRanges:[{start:0,end:125}],aria4InFlightRanges:[{start:125,end:200},{start:200,end:250},{start:800,end:900},{start:'bad',end:950}]},now);
+assert.deepEqual(leasedRanges.rangeInFlightSegments,[{left:12.5,width:12.5},{left:80,width:10}]);
+assert.equal(leasedRanges.rangeProgress,'12.50');
+const leasedHTML=Mustache.render(template,leasedRanges);
+assert.ok(leasedHTML.includes('处理中'));
+assert.ok(leasedHTML.includes('range-inflight" style="left:12.5%;width:12.5%'));
+assert.ok(leasedHTML.indexOf('class="range-inflight"')<leasedHTML.indexOf('class="range-complete"'));
+for(const status of ['paused','error','complete','waiting']) {
+ const inactive=transfers.prepare({...leasedRanges,status},now);
+ assert.deepEqual(inactive.rangeInFlightSegments,[]);
+ assert.ok(!Mustache.render(template,inactive).includes('class="range-inflight"'));
+}
+assert.deepEqual(transfers.prepare({...leasedRanges,aria4InFlightRanges:undefined},now).rangeInFlightSegments,[]);
+console.log('PASS: in-flight intervals rendered separately from completion and cleared on inactive tasks');
