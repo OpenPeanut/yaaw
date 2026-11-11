@@ -644,6 +644,8 @@
 /* vim: set et sw=4 ts=4 sts=4 fdm=marker ff=unix fenc=utf8: */ 
 
 /* Aria4 source accounting and peer availability */
+.p2p-speed { display: inline-block; white-space: nowrap; }
+.p2p-speed-icon { vertical-align: -3px; }
 .peer-mode { color: #276b55; font-size: 12px; }
 .transfer-section { margin: 12px 0; }
 .transfer-table-wrap { overflow-x: auto; margin-top: 6px; }

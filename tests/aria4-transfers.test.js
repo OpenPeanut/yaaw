@@ -101,20 +101,20 @@ const globalStats=transfers.prepareGlobal({downloadSpeed:'1048576',aria4PeerDown
 assert.equal(globalStats.peerDownloadSpeed,512000);
 assert.equal(globalStats.hasPeerSpeed,true);
 const format=value=>Number(value)>=1048576 ? (Number(value)/1048576)+'MB' : (Number(value)/1024)+'KB';
-assert.equal(transfers.speedTitle(globalStats,format),'↓1MB (p2p:500KB)');
+assert.equal(transfers.speedTitle(globalStats,format),'↓1MB (⚡ 500KB)');
 assert.equal(transfers.speedTitle(transfers.prepareGlobal({downloadSpeed:'1048576'}),format),'↓1MB');
 assert.equal(transfers.prepareGlobal({aria4PeerDownloadSpeed:'NaN'}).peerDownloadSpeed,0);
 const globalTemplate=html.match(/<script id="global-speed-tpl"[^>]*>([\s\S]*?)<\/script>/)[1];
 const activeTemplate=html.match(/<script id="active-task-tpl"[^>]*>([\s\S]*?)<\/script>/)[1];
 const view={format_size:()=>format};
 const speedHTML=Mustache.render(globalTemplate,{...globalStats,_v:view});
-assert.ok(speedHTML.includes('p2p:500KB/s'));
+assert.ok(speedHTML.includes('alt="P2P" width="16" height="16"> 500KB/s'));
 const activeSpeed=transfers.prepare({...fixture,downloadSpeed:1048576,aria4Sources:[
  {type:'http',downloadSpeed:'536576'}, {type:'phub',downloadSpeed:'256000'}, {type:'xphub',downloadSpeed:'256000'}
 ],aria4DownloadMode:'hybrid'},now);
 const activeHTML=Mustache.render(activeTemplate,{tasks:[activeSpeed],_v:view});
-assert.ok(activeHTML.includes('p2p:500KB/s'));
-assert.ok(!Mustache.render(globalTemplate,{downloadSpeed:'1024',_v:view}).includes('p2p:'));
+assert.ok(activeHTML.includes('alt="P2P" width="16" height="16"> 500KB/s'));
+assert.ok(!Mustache.render(globalTemplate,{downloadSpeed:'1024',_v:view}).includes('p2p-speed-icon'));
 console.log('PASS: global/task/title P2P speed includes PHub + XPHub and excludes HTTP/paused traffic');
 
 const peerWorker=transfers.prepareWorkerSource({id:'7',uri:'peer://73736eabea9c',showSpeed:true,downloadSpeed:176128}, {'peer://73736eabea9c':1});

@@ -83,7 +83,7 @@
   }
   function speedTitle(stats, format) {
     return "↓" + format(stats.downloadSpeed) +
-      (stats.hasPeerSpeed ? " (p2p:" + format(stats.peerDownloadSpeed) + ")" : "");
+      (stats.hasPeerSpeed ? " (⚡ " + format(stats.peerDownloadSpeed) + ")" : "");
   }
   function prepareWorkerSource(worker, urlIDs) {
     var match = /^peer:\/\/([a-f0-9]{12})$/i.exec(worker.uri || "");
