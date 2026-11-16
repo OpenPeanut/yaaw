@@ -410,10 +410,10 @@
           {{#hasPeers}}
           <div class="transfer-table-wrap peer-table-wrap">
             <table class="table table-condensed transfer-table peer-table">
-              <thead><tr><th>节点</th><th>来源</th><th>状态</th><th>连接</th><th>持有区间</th><th>累计接收</th><th>速度</th><th>失败</th></tr></thead>
+              <thead><tr><th>节点</th><th>来源</th><th>归属地</th><th>状态</th><th>连接</th><th>持有区间</th><th>累计接收</th><th>速度</th><th>失败</th></tr></thead>
               <tbody>
                 {{#peerRows}}
-                <tr><td class="peer-id">{{id}}</td><td>{{sourceLabel}}</td>
+                <tr><td class="peer-id">{{id}}</td><td>{{sourceLabel}}</td><td class="peer-location" title="IP 归属地（省级），仅供参考">{{location}}</td>
                   <td><span class="{{stateClass}}">{{stateLabel}}</span>{{#hasRetry}} · {{retrySeconds}} 秒后重试{{/hasRetry}}
                     {{#lastError}}<div class="peer-error">{{lastError}}</div>{{/lastError}}</td>
                   <td>{{connections}}</td>

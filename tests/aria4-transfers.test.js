@@ -57,6 +57,20 @@ assert.ok(rendered.includes('Workers:'));
 assert.ok(html.indexOf('js/aria4-transfers.js')<html.indexOf('js/aria2.js'));
 console.log('PASS: peer/source summary, paused state, retry timing, legacy API and escaped rendering');
 
+const locations = transfers.prepare({status:'active',aria4DownloadMode:'hybrid',aria4Peers:[
+ {id:'province',location:'浙江省'}, {id:'pending',location:'查询中…'},
+ {id:'legacy'}, {id:'unsafe',location:'<img src=x onerror="alert(1)">'}
+]}, now);
+assert.equal(locations.peerRows[2].location,'未知');
+const locationsHTML=Mustache.render(template,locations);
+assert.ok(locationsHTML.includes('<th>归属地</th>'));
+assert.ok(locationsHTML.includes('浙江省'));
+assert.ok(locationsHTML.includes('查询中…'));
+assert.ok(locationsHTML.includes('未知'));
+assert.ok(!locationsHTML.includes('<img src=x'));
+assert.ok(locationsHTML.includes('&lt;img'));
+console.log('PASS: province location, pending/unknown fallback and escaped location rendering');
+
 const hybrid = transfers.prepare({...fixture,aria4DownloadMode:'hybrid'}, now);
 assert.equal(hybrid.isPeerOnly,false);
 assert.equal(hybrid.isHybrid,true);

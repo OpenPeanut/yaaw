@@ -123,6 +123,7 @@
       var hasRanges = isFinite(rangeExpiry) && rangeExpiry > now;
       task.peerRows.push({
         id: peer.id, sourceLabel: sourceName(peer.source),
+        location: peer.location || "未知",
         stateLabel: inactive ? "已停止" : (states[peer.state] || "未知状态"), stateClass: inactive ? "peer-state-idle" : stateClass,
         receivedBytes: number(peer.receivedBytes),
         downloadSpeed: running ? number(peer.downloadSpeed) : 0,

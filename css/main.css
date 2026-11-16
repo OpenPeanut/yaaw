@@ -623,7 +623,9 @@
 .transfer-table th, .transfer-table td { text-align: right; vertical-align: top; }
 .transfer-table th:first-child, .transfer-table td:first-child,
 .peer-table th:nth-child(2), .peer-table td:nth-child(2),
-.peer-table th:nth-child(3), .peer-table td:nth-child(3) { text-align: left; }
+.peer-table th:nth-child(3), .peer-table td:nth-child(3),
+.peer-table th:nth-child(4), .peer-table td:nth-child(4) { text-align: left; }
+.peer-location { white-space: nowrap; }
 .peer-table-wrap { max-height: 340px; overflow-y: auto; }
 .peer-id { font-family: monospace; }
 .peer-error { color: #9d362e; max-width: 310px; overflow-wrap: anywhere; white-space: normal; }
